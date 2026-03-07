@@ -3,25 +3,155 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* LIGHT MODE (DEFAULT) */
+  --color-canvas-bg: #ffffff;
+  /* Re-purposed to page background for light mode */
+  --color-surface: #ffffff;
+  --color-panel: #f0f7ff;
+  --color-text-primary: #185783;
+  --color-text-secondary: #374151;
+  --color-border: rgba(79, 147, 203, 0.1);
+
+  /* CORE BRAND (Fixed across themes unless specified) */
+  --color-deep: #185783;
+  --color-mid: #4f93cb;
+  --color-light: #7fade9;
+  --color-white: #ffffff;
+  --color-section-light: #f0f7ff;
+  --color-whatsapp: #25D366;
+
+  /* SHADCN VARIABLES */
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 206 70% 30%;
+  /* Match brand color */
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 222.2 84% 4.9%;
+  --chart-5: 27 87% 67%;
+  --sidebar-background: 0 0% 98%;
+  --sidebar-foreground: 240 5.3% 26.1%;
+  --sidebar-primary: 240 5.9% 10%;
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent: 240 4.8% 95.9%;
+  --sidebar-accent-foreground: 240 5.9% 10%;
+  --sidebar-border: 220 13% 91%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
+
+  /* --- Animated Select Theme --- */
+  --radius: 0.625rem;
+  --chart-1: 220 100% 60%;
+  /* Example HSL for chart-1 */
+  --chart-2: 180 100% 40%;
+  /* Example HSL for chart-2 */
+  --chart-3: 270 100% 50%;
+  /* Example HSL for chart-3 */
+  --chart-4: 60 100% 50%;
+  /* Example HSL for chart-4 */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+[data-theme="dark"] {
+  /* DARK MODE OVERRIDES */
+  --color-canvas-bg: #0d1f2d;
+  --color-surface: #111827;
+  --color-panel: #1A2235;
+  --color-text-primary: #E8F4FF;
+  --color-text-secondary: #94A3B8;
+  --color-border: rgba(79, 147, 203, 0.2);
+  --color-section-light: #0d1f2d;
+
+  /* SHADCN VARIABLES DARK */
+  --background: 210 55% 11%;
+  --foreground: 210 40% 98%;
+  --card: 210 55% 11%;
+  --card-foreground: 210 40% 98%;
+  --popover: 210 55% 11%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 210 40% 98%;
+  --primary-foreground: 206 70% 30%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 212.7 26.8% 83.9%;
+
+  /* --- Animated Select Theme Dark --- */
+  --chart-1: 224.3 76.3% 48%;
+  /* Example HSL for chart-1 */
+  --chart-2: 180 100% 40%;
+  /* Example HSL for chart-2 */
+  --chart-3: 270 100% 50%;
+  /* Example HSL for chart-3 */
+  --chart-4: 60 100% 50%;
+  /* Example HSL for chart-4 */
+  --chart-5: 27 87% 67%;
+  --sidebar-background: 240 5.9% 10%;
+  --sidebar-foreground: 240 4.8% 95.9%;
+  --sidebar-primary: 224.3 76.3% 48%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 240 3.7% 15.9%;
+  --sidebar-accent-foreground: 240 4.8% 95.9%;
+  --sidebar-border: 240 3.7% 15.9%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
   }
 }
 
+/* Global Transitions for smooth theme switching */
+html,
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  color: var(--color-text-primary);
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* Scrollbar rules */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-canvas-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-mid);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-light);
+}
+
+/* ─── Testimonials Marquee ─── */
+/* Animations now handled via tailwind.config.ts for better RTL support */
+
+.marquee-container:hover .marquee-track {
+  animation-play-state: paused;
 }
