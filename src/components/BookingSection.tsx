@@ -25,7 +25,7 @@ import { fr, arDZ } from "date-fns/locale";
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { cn } from '@/lib/utils';
-import { CalendarWithTimePresets } from './ui/calendar-with-time-presets';
+import DateTimePicker from './ui/date-time-picker';
 import { ShimmerButton } from './ui/shimmer-button';
 
 export default function BookingSection() {
@@ -37,7 +37,7 @@ export default function BookingSection() {
         'skin', 'nails', 'mst', 'surgery', 'aesthetic', 'botox', 'prp_face', 'prp_hair', 'laser'
     ];
 
-    const [formData, setFormData] = useState({ name: '', phone: '', service: '', date: undefined as Date | undefined, time: null as string | null });
+    const [formData, setFormData] = useState({ name: '', phone: '', service: '', date: undefined as Date | undefined });
     const [errors, setErrors] = useState({ name: false, phone: false, service: false, date: false });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
@@ -48,7 +48,7 @@ export default function BookingSection() {
             name: !formData.name.trim(),
             phone: !formData.phone || formData.phone.length < 5,
             service: !formData.service,
-            date: !formData.date || !formData.time
+            date: !formData.date
         };
         setErrors(newErrors);
         if (Object.values(newErrors).some(err => err)) return;
@@ -58,7 +58,7 @@ export default function BookingSection() {
             setIsSubmitting(false);
             setIsSuccess(true);
             setTimeout(() => setIsSuccess(false), 5000);
-            setFormData({ name: '', phone: '', service: '', date: undefined, time: null });
+            setFormData({ name: '', phone: '', service: '', date: undefined });
         }, 1500);
     };
 
@@ -178,11 +178,10 @@ export default function BookingSection() {
                                             <label className="text-xs font-bold text-[#4f93cb] uppercase tracking-wider px-1 block">
                                                 {lang === 'fr' ? 'Date & Heure souhaitées' : 'التاريخ والوقت المفضل'}
                                             </label>
-                                            <CalendarWithTimePresets
-                                                selectedDate={formData.date}
-                                                selectedTime={formData.time}
-                                                onSelect={(date, time) => {
-                                                    setFormData({ ...formData, date, time });
+                                            <DateTimePicker
+                                                value={formData.date}
+                                                onChange={(date) => {
+                                                    setFormData({ ...formData, date });
                                                     setErrors({ ...errors, date: !date });
                                                 }}
                                             />
@@ -225,25 +224,10 @@ export default function BookingSection() {
                         initial={{ opacity: 0, x: 30 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        className="lg:col-span-12 xl:col-span-7 order-1 xl:order-2 space-y-8"
+                        className="lg:col-span-12 xl:col-span-7 order-1 xl:order-2 space-y-8 flex flex-col"
                     >
-                        {/* Map Card */}
-                        <div className="bg-[var(--color-surface)] rounded-3xl shadow-xl border border-[#4f93cb]/10 p-2 h-[450px] overflow-hidden group">
-                            <div className="w-full h-full rounded-2xl overflow-hidden relative">
-                                <GoogleMapEmbed />
-                                <a
-                                    href="https://www.google.com/maps/search/?api=1&query=35.1932,-6.1534"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md text-[#185783] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg hover:bg-white transition-all transform hover:scale-105"
-                                >
-                                    {contactT.map} <ExternalLink size={12} />
-                                </a>
-                            </div>
-                        </div>
-
                         {/* Location Details Grid */}
-                        <div className="grid w-full grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
+                        <div className="grid w-full grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 order-1">
                             {/* Address Card */}
                             <motion.a
                                 href="https://www.google.com/maps/search/?api=1&query=35.1932,-6.1534"
@@ -310,6 +294,21 @@ export default function BookingSection() {
                                     </div>
                                 </div>
                             </motion.div>
+                        </div>
+
+                        {/* Map Card */}
+                        <div className="order-2 mt-8 bg-[var(--color-surface)] rounded-3xl shadow-xl border border-[#4f93cb]/10 p-2 h-[450px] overflow-hidden group">
+                            <div className="w-full h-full rounded-2xl overflow-hidden relative">
+                                <GoogleMapEmbed />
+                                <a
+                                    href="https://www.google.com/maps/search/?api=1&query=35.1932,-6.1534"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md text-[#185783] px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg hover:bg-white transition-all transform hover:scale-105"
+                                >
+                                    {contactT.map} <ExternalLink size={12} />
+                                </a>
+                            </div>
                         </div>
                     </motion.div>
                 </div>

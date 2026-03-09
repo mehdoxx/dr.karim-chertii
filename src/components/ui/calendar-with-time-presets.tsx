@@ -45,10 +45,10 @@ export function CalendarWithTimePresets({ onSelect, selectedDate, selectedTime }
     }
 
     return (
-        <Card className="border-[#4f93cb]/20 bg-[var(--color-surface)]/80 backdrop-blur-xl rounded-3xl shadow-2xl shadow-[#4f93cb]/5">
-            <CardContent className="flex flex-col p-0 rounded-3xl border border-transparent max-w-lg mx-auto w-full">
+        <Card className="border-[#4f93cb]/20 bg-[var(--color-surface)]/80 backdrop-blur-xl rounded-2xl shadow-lg shadow-[#4f93cb]/5">
+            <CardContent className="flex flex-col p-0 rounded-2xl border border-transparent max-w-[340px] mx-auto w-full">
                 {/* Calendar Section */}
-                <div className="p-4 sm:p-6 bg-white/50 dark:bg-black/5 flex items-center justify-center border-b border-[#4f93cb]/10">
+                <div className="p-2 sm:p-4 bg-white/50 dark:bg-black/5 flex items-center justify-center border-b border-[#4f93cb]/10">
                     <Calendar
                         mode="single"
                         selected={date}
@@ -62,7 +62,7 @@ export function CalendarWithTimePresets({ onSelect, selectedDate, selectedTime }
                 </div>
 
                 {/* Unified Time Selection (Animated Select) */}
-                <div className="w-full p-6 sm:p-8 flex flex-col gap-4 max-w-sm mx-auto">
+                <div className="w-full p-4 sm:p-5 flex flex-col gap-3 max-w-[340px] mx-auto">
                     <div className={cn(
                         "text-xs font-bold text-[#4f93cb] uppercase tracking-widest px-1",
                         isRtl ? "text-right" : "text-left"
