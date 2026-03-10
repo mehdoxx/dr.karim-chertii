@@ -37,9 +37,11 @@ export default function ReservationForm() {
     const [errors, setErrors] = useState({ name: false, phone: false, service: false });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [apiError, setApiError] = useState('');
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setApiError('');
 
         const newErrors = {
             name: !formData.name.trim(),
@@ -48,20 +50,66 @@ export default function ReservationForm() {
         };
 
         setErrors(newErrors);
-
         if (Object.values(newErrors).some(err => err)) return;
 
         setIsSubmitting(true);
-        // Mock API call
-        setTimeout(() => {
+
+        try {
+            // Split "Nom complet" into first_name and last_name
+            const nameParts = formData.name.trim().split(/\s+/);
+            const firstName = nameParts[0] || '';
+            const lastName = nameParts.slice(1).join(' ') || firstName;
+
+            const res = await fetch('/api/appointments', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    first_name: firstName,
+                    last_name: lastName,
+                    phone: formData.phone,
+                    service: formData.service,
+                    lang,
+                }),
+            });
+
+            if (res.status === 201) {
+                setIsSuccess(true);
+                setTimeout(() => setIsSuccess(false), 5000);
+                setFormData({ name: '', phone: '', service: '', date: undefined });
+            } else if (res.status === 429) {
+                setApiError(lang === 'fr' ? 'Trop de demandes. Réessayez dans une heure.' : 'طلبات كثيرة جداً. حاول بعد ساعة.');
+            } else if (res.status === 400) {
+                const data = await res.json();
+                if (data.errors) {
+                    const firstError = Object.values(data.errors)[0] as string;
+                    setApiError(firstError);
+                }
+            } else {
+                setApiError(lang === 'fr' ? 'Une erreur est survenue. Veuillez réessayer.' : 'حدث خطأ. يرجى المحاولة مرة أخرى.');
+            }
+        } catch {
+            setApiError(lang === 'fr' ? 'Une erreur est survenue. Veuillez réessayer.' : 'حدث خطأ. يرجى المحاولة مرة أخرى.');
+        } finally {
             setIsSubmitting(false);
-            setIsSuccess(true);
-            setTimeout(() => setIsSuccess(false), 5000);
-            setFormData({ name: '', phone: '', service: '', date: undefined });
-        }, 1500);
+        }
     };
 
     const dateLocale = lang === 'fr' ? fr : arDZ;
+
+    const [isMounted, setIsMounted] = useState(false);
+    React.useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    if (!isMounted) {
+        return (
+            <section id="reservation-form" className="w-full py-24 bg-[var(--color-section-light)]">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="h-[600px] w-full bg-[var(--color-surface)] rounded-3xl animate-pulse"></div>
+                </div>
+            </section>
+        );
+    }
 
     return (
         <section id="reservation-form" className="w-full py-24 bg-[var(--color-section-light)]">
@@ -201,6 +249,12 @@ export default function ReservationForm() {
                                                 </PopoverContent>
                                             </Popover>
                                         </div>
+
+                                        {apiError && (
+                                            <div className="bg-red-500/10 border border-red-400/30 rounded-xl px-4 py-3 text-red-400 text-sm text-center">
+                                                {apiError}
+                                            </div>
+                                        )}
 
                                         <motion.button
                                             whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}

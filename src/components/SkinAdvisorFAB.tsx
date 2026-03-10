@@ -7,6 +7,7 @@ import { translations } from '@/lib/translations';
 import { Sparkles, X, Send, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { SkinAnalysisResult } from '@/lib/geminiSkinAdvisor';
 
 export default function SkinAdvisorFAB() {
     const { lang } = useLanguage();
@@ -18,6 +19,7 @@ export default function SkinAdvisorFAB() {
     const [inputValue, setInputValue] = useState('');
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const [result, setResult] = useState<SkinAnalysisResult | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -38,16 +40,32 @@ export default function SkinAdvisorFAB() {
         }
     };
 
-    const handleSend = () => {
+    const handleSend = async () => {
         if (!inputValue && !imagePreview) return;
         setLoading(true);
-        // This is a shell for Gemini integration
-        setTimeout(() => {
+        setResult(null);
+
+        try {
+            const promptContext = imagePreview
+                ? `Please analyze this selfie/image of my skin: ${inputValue}`
+                : `I am experiencing concerns related to: ${inputValue}`;
+
+            const response = await fetch('/api/skin-advisor', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: promptContext, imageBase64: imagePreview, lang })
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setResult(data.analysis);
+        } catch (error) {
+            console.error("Skin Advisor Error:", error);
+            // Result will be null, and we can handle it or the analyzer returns a fallback
+        } finally {
             setLoading(false);
-            setIsOpen(false);
-            // Scroll to reservation after "analysis" in a real scenario
-            document.getElementById('reservation-form')?.scrollIntoView({ behavior: 'smooth' });
-        }, 2000);
+        }
     };
 
     return (
@@ -81,33 +99,69 @@ export default function SkinAdvisorFAB() {
                             </button>
                         </div>
 
-                        {/* Chat / Upload Area */}
-                        <div className="p-5 min-h-[300px] flex flex-col bg-[var(--color-canvas-bg)]/50">
-                            <div className="flex-1 space-y-4">
-                                <div className="bg-[#4f93cb]/10 border border-[#4f93cb]/20 p-3 rounded-2xl rounded-tl-none rtl:rounded-tl-2xl rtl:rounded-tr-none text-sm text-[var(--color-text-primary)]">
-                                    {lang === 'fr'
-                                        ? "Bonjour ! Je suis l'assistant IA du Dr. Cherti. Décrivez votre souci de peau ou téléchargez une photo pour une analyse instantanée."
-                                        : "مرحباً! أنا مساعد الذكاء الاصطناعي للدكتور الشرتي. صف مشكلتك الجلدية أو ارفع صورة للحصول على تحليل فوري."}
-                                </div>
+                        {/* Chat / Upload Area / Results */}
+                        <div className="p-5 min-h-[300px] max-h-[400px] overflow-y-auto flex flex-col bg-[var(--color-canvas-bg)]/50 scrollbar-thin scrollbar-thumb-[var(--color-border)]">
+                            <AnimatePresence mode="wait">
+                                {!result && (
+                                    <motion.div key="intro" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 space-y-4">
+                                        <div className="bg-[#4f93cb]/10 border border-[#4f93cb]/20 p-3 rounded-2xl rounded-tl-none rtl:rounded-tl-2xl rtl:rounded-tr-none text-sm text-[var(--color-text-primary)]">
+                                            {lang === 'fr'
+                                                ? "Bonjour ! Je suis l'assistant IA du Dr. Cherti. Décrivez votre souci de peau ou téléchargez une photo pour une analyse instantanée."
+                                                : "مرحباً! أنا مساعد الذكاء الاصطناعي للدكتور الشرتي. صف مشكلتك الجلدية أو ارفع صورة للحصول على تحليل فوري."}
+                                        </div>
 
-                                {imagePreview && (
-                                    <div className="relative w-32 h-32 rounded-xl overflow-hidden border border-[#4f93cb]/30 mx-auto">
-                                        <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                                        <button
-                                            onClick={() => setImagePreview(null)}
-                                            className="absolute top-1 right-1 p-1 bg-black/50 text-white rounded-full hover:bg-black/70"
-                                        >
-                                            <X size={14} />
-                                        </button>
-                                    </div>
+                                        {imagePreview && (
+                                            <div className="relative w-32 h-32 rounded-xl overflow-hidden border border-[#4f93cb]/30 mx-auto">
+                                                <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                                <button
+                                                    onClick={() => setImagePreview(null)}
+                                                    className="absolute top-1 right-1 p-1 bg-black/50 text-white rounded-full hover:bg-black/70"
+                                                >
+                                                    <X size={14} />
+                                                </button>
+                                            </div>
+                                        )}
+                                    </motion.div>
                                 )}
-                            </div>
+
+                                {result && (
+                                    <motion.div key="result" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex-1 space-y-4 text-sm">
+                                        <div className="bg-[#4f93cb]/10 border border-[#4f93cb]/20 p-4 rounded-2xl rounded-tl-none rtl:rounded-tl-2xl rtl:rounded-tr-none text-[var(--color-text-primary)] space-y-3">
+                                            <div>
+                                                <strong className="text-[#4f93cb] block">{lang === 'fr' ? 'Analyse Probable :' : 'التحليل المحتمل:'}</strong>
+                                                <p>{result.condition}</p>
+                                            </div>
+                                            <div>
+                                                <strong className="text-[#4f93cb] block">{lang === 'fr' ? 'Traitement Recommandé :' : 'العلاج الموصى به:'}</strong>
+                                                <p>{result.recommendedTreatment}</p>
+                                            </div>
+                                            <div>
+                                                <strong className="text-[#4f93cb] block">{lang === 'fr' ? 'Conseils :' : 'نصائح:'}</strong>
+                                                <ul className="list-disc list-inside space-y-1 mt-1 text-xs opacity-80">
+                                                    {result.routine.map((step, idx) => (
+                                                        <li key={idx}>{step}</li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                            <button
+                                                onClick={() => {
+                                                    setIsOpen(false);
+                                                    document.getElementById('reservation-form')?.scrollIntoView({ behavior: 'smooth' });
+                                                }}
+                                                className="w-full bg-[#4f93cb] text-white py-2 rounded-lg font-medium hover:bg-[#185783] mt-2 transition-colors"
+                                            >
+                                                {t.nav.bookCta}
+                                            </button>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
 
                             {/* Warning */}
-                            <p className="text-[10px] text-[#4f93cb]/60 italic mt-4 text-center">
-                                {lang === 'fr'
+                            <p className="text-[10px] text-[#4f93cb]/60 italic mt-4 text-center shrink-0">
+                                {result ? result.disclaimer : (lang === 'fr'
                                     ? "Outil informatif uniquement. Ne remplace pas une consultation médicale."
-                                    : "أداة إعلامية فقط. لا تغني عن الاستشارة الطبية."}
+                                    : "أداة إعلامية فقط. لا تغني عن الاستشارة الطبية.")}
                             </p>
                         </div>
 
@@ -158,7 +212,7 @@ export default function SkinAdvisorFAB() {
             {/* FAB Button */}
             <div className="relative group">
                 {/* Glow aura */}
-                <div className="absolute inset-0 bg-[#4f93cb] rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity animate-pulse" />
+                <div className="absolute inset-0 bg-[#4f93cb] rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity animate-pulse pointer-events-none" />
 
                 <motion.button
                     whileHover={{ scale: 1.05 }}

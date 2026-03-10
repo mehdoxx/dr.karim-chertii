@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Determine API key
-const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || 'mock-dev-key';
+const apiKey = process.env.GEMINI_API_KEY || 'mock-dev-key';
 const genAI = new GoogleGenerativeAI(apiKey);
 
 export interface SkinAnalysisResult {
