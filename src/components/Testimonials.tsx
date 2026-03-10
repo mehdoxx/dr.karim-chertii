@@ -37,7 +37,7 @@ const testimonialsAr: Testimonial[] = [
 
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
     return (
-        <div className="group relative flex-shrink-0 w-[340px] md:w-[400px]">
+        <div className="group relative flex-shrink-0 w-[280px] sm:w-[340px] md:w-[400px]">
             {/* Glow effect behind card */}
             <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-br from-[#4f93cb]/30 via-[#7fade9]/20 to-[#185783]/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
 

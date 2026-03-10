@@ -51,7 +51,7 @@ export default function SkinAdvisorFAB() {
     };
 
     return (
-        <div className="fixed bottom-6 right-6 rtl:left-6 rtl:right-auto z-50 flex flex-col items-end rtl:items-start print:hidden">
+        <div className="fixed bottom-20 md:bottom-6 right-4 md:right-6 rtl:left-4 rtl:md:left-6 rtl:right-auto z-50 flex flex-col items-end rtl:items-start print:hidden">
 
             {/* Popup UI Shell */}
             <AnimatePresence>
@@ -60,7 +60,7 @@ export default function SkinAdvisorFAB() {
                         initial={{ opacity: 0, y: 20, scale: 0.95, transformOrigin: lang === 'ar' ? 'bottom left' : 'bottom right' }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
-                        className="mb-4 w-[350px] md:w-[400px] bg-[var(--color-surface)] rounded-2xl shadow-2xl border border-[#4f93cb]/20 overflow-hidden flex flex-col"
+                        className="mb-4 w-[320px] sm:w-[350px] md:w-[400px] bg-[var(--color-surface)] rounded-2xl shadow-2xl border border-[#4f93cb]/20 overflow-hidden flex flex-col"
                         dir={lang === 'ar' ? 'rtl' : 'ltr'}
                     >
                         {/* Header */}
@@ -164,9 +164,9 @@ export default function SkinAdvisorFAB() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setIsOpen(!isOpen)}
-                    className={`w-16 h-16 rounded-full flex items-center justify-center shadow-2xl relative z-10 transition-all duration-300 ${isOpen ? 'bg-[#0d1f2d] text-white rotate-90' : 'bg-gradient-to-tr from-[#185783] to-[#4f93cb] text-white'}`}
+                    className={`w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-2xl relative z-10 transition-all duration-300 ${isOpen ? 'bg-[#0d1f2d] text-white rotate-90' : 'bg-gradient-to-tr from-[#185783] to-[#4f93cb] text-white'}`}
                 >
-                    {isOpen ? <X size={28} /> : <Sparkles size={28} className="animate-[sparkle_2s_ease-in-out_infinite]" />}
+                    {isOpen ? <X className="size-5 md:size-7" /> : <Sparkles className="size-5 md:size-7 animate-[sparkle_2s_ease-in-out_infinite]" />}
                 </motion.button>
             </div>
 
