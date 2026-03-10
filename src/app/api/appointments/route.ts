@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createHash } from 'crypto';
-import { supabaseAdmin } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 import { sanitizeString, validateAppointmentInput } from '@/lib/validation';
 import { AppointmentInsert } from '@/types/database';
 
@@ -89,8 +89,8 @@ export async function POST(request: Request) {
             user_agent: request.headers.get('user-agent') || undefined,
         };
 
-        // 6. Save to Supabase using admin key
-        const { data, error } = await supabaseAdmin
+        // 6. Save to Supabase using anon key
+        const { data, error } = await supabase
             .from('appointments')
             .insert(insertPayload)
             .select('id')
