@@ -256,7 +256,7 @@ export function PulseFitHero({
                             className="font-bold tracking-tight text-foreground drop-shadow-sm mb-4"
                             style={{
                                 fontFamily: "var(--font-inter)",
-                                fontSize: "clamp(36px, 6vw, 72px)",
+                                fontSize: "clamp(30px, 8vw, 72px)",
                                 lineHeight: "1.1",
                                 letterSpacing: "-0.02em",
                                 whiteSpace: "pre-line",
@@ -372,7 +372,7 @@ export function PulseFitHero({
                                     className="text-muted-foreground"
                                     style={{
                                         fontFamily: "var(--font-inter)",
-                                        fontSize: "14px",
+                                        fontSize: "clamp(12px, 3.5vw, 14px)",
                                         fontWeight: 500,
                                     }}
                                 >

@@ -63,7 +63,7 @@ export function FooterSection() {
         <footer
             id="contact"
             dir={lang === 'ar' ? 'rtl' : 'ltr'}
-            className="md:rounded-t-[4rem] relative w-full max-w-7xl mx-auto flex flex-col items-center justify-center rounded-t-3xl border-t border-[#4f93cb]/10 bg-[radial-gradient(40%_160px_at_50%_0%,rgba(79,147,203,0.1),transparent)] px-6 py-16 lg:py-24 overflow-hidden mt-12 bg-[var(--color-canvas-bg)]"
+            className="md:rounded-t-[4rem] relative w-full max-w-7xl mx-auto flex flex-col items-center justify-center rounded-t-3xl border-t border-[#4f93cb]/10 bg-[radial-gradient(40%_160px_at_50%_0%,rgba(79,147,203,0.1),transparent)] px-6 py-16 lg:py-24 pb-28 md:pb-16 overflow-hidden mt-12 bg-[var(--color-canvas-bg)]"
         >
             {/* Top Glow Line */}
             <div className="bg-[#4f93cb]/30 absolute top-0 right-1/2 left-1/2 h-px w-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full blur-md" />

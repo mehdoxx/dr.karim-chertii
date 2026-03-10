@@ -331,7 +331,7 @@ export const Navbar1 = ({
 
                 {/* MOBILE NAV */}
                 <div className="w-full flex lg:hidden items-center justify-between">
-                    <a href={logo.url} className="flex items-center gap-2">
+                    <a href={logo.url} className="flex items-center gap-1.5 sm:gap-2">
                         <img src={logo.src} className="w-8 h-8 object-contain" alt={logo.alt} />
                         <span className={cn(
                             "font-semibold transition-all duration-500 text-shadow-sm tracking-tight",
@@ -339,7 +339,7 @@ export const Navbar1 = ({
                         )}>{logo.title}</span>
                     </a>
 
-                    <div className="flex items-center gap-2 rtl:space-x-reverse">
+                    <div className="flex items-center gap-1 sm:gap-2 rtl:space-x-reverse">
                         <AnimatedThemeToggle />
 
                         <Sheet>
